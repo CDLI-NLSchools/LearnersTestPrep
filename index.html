@@ -45,11 +45,11 @@
     <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
       <div>
         <h1 class="text-2xl font-bold">NL Class 5 Permit Study Guide</h1>
-        <p class="text-blue-200 text-sm">95 Practice Questions • NL Driver's Handbook</p>
+        <p class="text-blue-200 text-sm">95 Question Master Bank • 7-Question Quick Quizzes</p>
       </div>
       <div class="flex gap-2">
         <button id="mode-flashcards-btn" onclick="setMode('flashcards')" class="px-4 py-2 rounded-lg text-sm font-semibold transition bg-amber-500 text-white shadow">Flashcards</button>
-        <button id="mode-quiz-btn" onclick="setMode('quiz')" class="px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-800 hover:bg-blue-700 text-blue-100">Practice Quiz</button>
+        <button id="mode-quiz-btn" onclick="setMode('quiz')" class="px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-800 hover:bg-blue-700 text-blue-100">Quick Quiz (7 Qs)</button>
       </div>
     </div>
   </header>
@@ -60,7 +60,10 @@
     <section id="flashcards-section" class="flex flex-col items-center">
       <div class="w-full mb-4 flex justify-between items-center text-sm font-medium text-slate-600">
         <span id="fc-counter">Card 1 of 95</span>
-        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Click card to flip</span>
+        <div class="flex gap-2 items-center">
+          <button onclick="shuffleFlashcards()" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-md font-semibold transition">🔀 Reshuffle Deck</button>
+          <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Click card to flip</span>
+        </div>
       </div>
 
       <div class="w-full h-80 card-flip cursor-pointer mb-6" onclick="flipCard()">
@@ -86,7 +89,7 @@
     <section id="quiz-section" class="hidden flex-col items-center">
       <div id="quiz-container" class="w-full bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
         <div class="flex justify-between items-center mb-4 border-b pb-3">
-          <span id="quiz-progress" class="text-sm font-semibold text-blue-600">Question 1 of 95</span>
+          <span id="quiz-progress" class="text-sm font-semibold text-blue-600">Question 1 of 7</span>
           <span id="quiz-score" class="text-sm font-semibold text-slate-500">Score: 0/0</span>
         </div>
 
@@ -105,9 +108,9 @@
       <div id="quiz-results" class="hidden w-full bg-white p-8 rounded-2xl shadow-xl text-center border border-slate-200">
         <h2 class="text-2xl font-bold text-slate-800 mb-2">Quiz Completed!</h2>
         <div class="text-5xl font-extrabold my-4" id="final-score-pct">0%</div>
-        <p id="pass-fail-msg" class="text-lg font-semibold mb-6"></p>
-        <p class="text-slate-600 mb-6">In Newfoundland and Labrador, a score of <strong>85% or higher</strong> (at least 81/95 correct) is required to pass.</p>
-        <button onclick="restartQuiz()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition">Try Again</button>
+        <p id="pass-fail-msg" class="text-lg font-semibold mb-2"></p>
+        <p id="score-count-msg" class="text-slate-600 mb-6 text-sm"></p>
+        <button onclick="restartQuiz()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition">Take Another 7-Question Quiz 🔀</button>
       </div>
     </section>
 
@@ -118,782 +121,131 @@
   </footer>
 
   <script>
-    // 95-Question Dataset covering standard NL Driver Handbook topics
     const dataset = [
       // Graduated Licensing & Level 1 Rules (1-15)
-      {
-        category: "Graduated Licensing",
-        question: "What passing score is required on the Newfoundland & Labrador Class 5 written permit test?",
-        answer: "85%",
-        options: ["70%", "75%", "80%", "85%"],
-        correctIndex: 3,
-        explanation: "You must score at least 85% on the written knowledge test to pass in NL."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "What is the maximum allowable Blood Alcohol Content (BAC) for a Level I Learner driver?",
-        answer: "0.00%",
-        options: ["0.00%", "0.02%", "0.05%", "0.08%"],
-        correctIndex: 0,
-        explanation: "Novice drivers in Level I and Level II must maintain a zero (0.00%) BAC."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "During which hours is a Level I Learner driver prohibited from driving?",
-        answer: "Midnight (12:00 a.m.) to 5:00 a.m.",
-        options: ["10:00 p.m. to 6:00 a.m.", "Midnight (12:00 a.m.) to 5:00 a.m.", "11:00 p.m. to 5:00 a.m.", "1:00 a.m. to 6:00 a.m."],
-        correctIndex: 1,
-        explanation: "Level I Learner drivers cannot drive between midnight and 5:00 a.m."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "How long must a driver hold a Level I Class 5 licence before taking the road test (without commercial driver training)?",
-        answer: "12 months",
-        options: ["6 months", "8 months", "12 months", "24 months"],
-        correctIndex: 2,
-        explanation: "The minimum waiting period is 12 months, reduced to 8 months if an approved driver training course is completed."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "If a Level I driver completes an approved driver education course, the waiting period before taking the road test is reduced to:",
-        answer: "8 months",
-        options: ["4 months", "6 months", "8 months", "10 months"],
-        correctIndex: 2,
-        explanation: "Completing an approved driver education program reduces the Level I period from 12 to 8 months."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "What driving experience must an accompanying driver have when supervising a Level I driver?",
-        answer: "Licensed as a Class 5 driver for at least 4 years",
-        options: ["Licensed for 1 year", "Licensed for 2 years", "Licensed for at least 4 years", "Any driver over 25"],
-        correctIndex: 2,
-        explanation: "The accompanying driver sitting in the front passenger seat must hold a full Class 5 license with at least 4 years driving experience."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "Who is allowed in the front seat next to a Level I driver while driving?",
-        answer: "Only the designated accompanying driver",
-        options: ["Anyone over age 18", "Only the designated accompanying driver", "Up to two passengers", "A parent and a friend"],
-        correctIndex: 1,
-        explanation: "Only the licensed accompanying driver is permitted in the front seat."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "Are Level I drivers permitted to drive on paved highways such as the Trans-Canada Highway?",
-        answer: "Yes, provided they have a qualified accompanying driver",
-        options: ["No, highway driving is forbidden", "Yes, provided they have a qualified accompanying driver", "Only during daylight hours", "Only within city limits"],
-        correctIndex: 1,
-        explanation: "Level I drivers may drive on all roadways as long as a qualified accompanying driver is present."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "How long does a driver remain in the Level II (Novice) stage of the Graduated Driver Licensing (GDL) program?",
-        answer: "12 months",
-        options: ["6 months", "12 months", "18 months", "24 months"],
-        correctIndex: 1,
-        explanation: "Level II lasts for 12 months before a driver can move to a full, unrestricted Class 5 license."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "What passenger restriction applies to Level II drivers between Midnight and 5:00 a.m.?",
-        answer: "Only 1 passenger (unless accompanied by a qualified licensed driver)",
-        options: ["No passengers allowed", "Only 1 passenger (unless accompanied by a qualified driver)", "Up to 3 passengers", "No restrictions apply"],
-        correctIndex: 1,
-        explanation: "Between midnight and 5:00 a.m., Level II drivers may carry only one passenger unless accompanied by a licensed driver of at least 4 years."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "What is the penalty for a novice driver caught with a BAC above 0.00%?",
-        answer: "Immediate licence suspension at the roadside",
-        options: ["A $50 fine", "Written warning", "Immediate licence suspension at roadside", "Loss of 1 demerit point"],
-        correctIndex: 2,
-        explanation: "Novice drivers violating zero-tolerance alcohol/drug laws face immediate roadside suspension."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "Can a Level I driver supervise another learner driver?",
-        answer: "No, never",
-        options: ["Yes, if over 21", "Yes, during daytime", "No, never", "Yes, with parent permission"],
-        correctIndex: 2,
-        explanation: "Only full Class 5 drivers with at least 4 years of experience can supervise a learner driver."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "In NL, how many passengers can be in the rear seat of a Level I driver's vehicle?",
-        answer: "Passengers are allowed as long as every person has a seatbelt",
-        options: ["No passengers in the back seat", "Only 1 passenger in back", "Passengers are allowed as long as each has a working seatbelt", "Maximum 2 passengers"],
-        correctIndex: 2,
-        explanation: "Rear seat passengers are permitted provided there are available working seatbelts for everyone."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "What happens if a Level I driver has their licence suspended?",
-        answer: "The waiting period time resets upon reinstatement",
-        options: ["Nothing changes", "The waiting period time resets upon reinstatement", "They get a full licence sooner", "They pay a $10 fee"],
-        correctIndex: 1,
-        explanation: "Any suspension pauses or resets the required time spent in the GDL stage."
-      },
-      {
-        category: "Graduated Licensing",
-        question: "What licence class is the standard non-commercial passenger vehicle licence in NL?",
-        answer: "Class 5",
-        options: ["Class 1", "Class 3", "Class 5", "Class 6"],
-        correctIndex: 2,
-        explanation: "Class 5 is the standard operator licence for passenger cars, light trucks, and vans."
-      },
+      { category: "Graduated Licensing", question: "What passing score is required on the Newfoundland & Labrador Class 5 written permit test?", answer: "85%", options: ["70%", "75%", "80%", "85%"], correctIndex: 3, explanation: "You must score at least 85% on the written knowledge test to pass in NL." },
+      { category: "Graduated Licensing", question: "What is the maximum allowable Blood Alcohol Content (BAC) for a Level I Learner driver?", answer: "0.00%", options: ["0.00%", "0.02%", "0.05%", "0.08%"], correctIndex: 0, explanation: "Novice drivers in Level I and Level II must maintain a zero (0.00%) BAC." },
+      { category: "Graduated Licensing", question: "During which hours is a Level I Learner driver prohibited from driving?", answer: "Midnight (12:00 a.m.) to 5:00 a.m.", options: ["10:00 p.m. to 6:00 a.m.", "Midnight (12:00 a.m.) to 5:00 a.m.", "11:00 p.m. to 5:00 a.m.", "1:00 a.m. to 6:00 a.m."], correctIndex: 1, explanation: "Level I Learner drivers cannot drive between midnight and 5:00 a.m." },
+      { category: "Graduated Licensing", question: "How long must a driver hold a Level I Class 5 licence before taking the road test (without commercial driver training)?", answer: "12 months", options: ["6 months", "8 months", "12 months", "24 months"], correctIndex: 2, explanation: "The minimum waiting period is 12 months, reduced to 8 months if an approved driver training course is completed." },
+      { category: "Graduated Licensing", question: "If a Level I driver completes an approved driver education course, the waiting period before taking the road test is reduced to:", answer: "8 months", options: ["4 months", "6 months", "8 months", "10 months"], correctIndex: 2, explanation: "Completing an approved driver education program reduces the Level I period from 12 to 8 months." },
+      { category: "Graduated Licensing", question: "What driving experience must an accompanying driver have when supervising a Level I driver?", answer: "Licensed as a Class 5 driver for at least 4 years", options: ["Licensed for 1 year", "Licensed for 2 years", "Licensed for at least 4 years", "Any driver over 25"], correctIndex: 2, explanation: "The accompanying driver sitting in the front passenger seat must hold a full Class 5 license with at least 4 years driving experience." },
+      { category: "Graduated Licensing", question: "Who is allowed in the front seat next to a Level I driver while driving?", answer: "Only the designated accompanying driver", options: ["Anyone over age 18", "Only the designated accompanying driver", "Up to two passengers", "A parent and a friend"], correctIndex: 1, explanation: "Only the licensed accompanying driver is permitted in the front seat." },
+      { category: "Graduated Licensing", question: "Are Level I drivers permitted to drive on paved highways such as the Trans-Canada Highway?", answer: "Yes, provided they have a qualified accompanying driver", options: ["No, highway driving is forbidden", "Yes, provided they have a qualified accompanying driver", "Only during daylight hours", "Only within city limits"], correctIndex: 1, explanation: "Level I drivers may drive on all roadways as long as a qualified accompanying driver is present." },
+      { category: "Graduated Licensing", question: "How long does a driver remain in the Level II (Novice) stage of the Graduated Driver Licensing (GDL) program?", answer: "12 months", options: ["6 months", "12 months", "18 months", "24 months"], correctIndex: 1, explanation: "Level II lasts for 12 months before a driver can move to a full, unrestricted Class 5 license." },
+      { category: "Graduated Licensing", question: "What passenger restriction applies to Level II drivers between Midnight and 5:00 a.m.?", answer: "Only 1 passenger (unless accompanied by a qualified licensed driver)", options: ["No passengers allowed", "Only 1 passenger (unless accompanied by a qualified driver)", "Up to 3 passengers", "No restrictions apply"], correctIndex: 1, explanation: "Between midnight and 5:00 a.m., Level II drivers may carry only one passenger unless accompanied by a licensed driver of at least 4 years." },
+      { category: "Graduated Licensing", question: "What is the penalty for a novice driver caught with a BAC above 0.00%?", answer: "Immediate licence suspension at the roadside", options: ["A $50 fine", "Written warning", "Immediate licence suspension at roadside", "Loss of 1 demerit point"], correctIndex: 2, explanation: "Novice drivers violating zero-tolerance alcohol/drug laws face immediate roadside suspension." },
+      { category: "Graduated Licensing", question: "Can a Level I driver supervise another learner driver?", answer: "No, never", options: ["Yes, if over 21", "Yes, during daytime", "No, never", "Yes, with parent permission"], correctIndex: 2, explanation: "Only full Class 5 drivers with at least 4 years of experience can supervise a learner driver." },
+      { category: "Graduated Licensing", question: "In NL, how many passengers can be in the rear seat of a Level I driver's vehicle?", answer: "Passengers are allowed as long as every person has a seatbelt", options: ["No passengers in the back seat", "Only 1 passenger in back", "Passengers are allowed as long as each has a working seatbelt", "Maximum 2 passengers"], correctIndex: 2, explanation: "Rear seat passengers are permitted provided there are available working seatbelts for everyone." },
+      { category: "Graduated Licensing", question: "What happens if a Level I driver has their licence suspended?", answer: "The waiting period time resets upon reinstatement", options: ["Nothing changes", "The waiting period time resets upon reinstatement", "They get a full licence sooner", "They pay a $10 fee"], correctIndex: 1, explanation: "Any suspension pauses or resets the required time spent in the GDL stage." },
+      { category: "Graduated Licensing", question: "What licence class is the standard non-commercial passenger vehicle licence in NL?", answer: "Class 5", options: ["Class 1", "Class 3", "Class 5", "Class 6"], correctIndex: 2, explanation: "Class 5 is the standard operator licence for passenger cars, light trucks, and vans." },
 
       // Speed Limits & Road Rules (16-35)
-      {
-        category: "Speed Limits",
-        question: "What is the speed limit on paved rural sections of the Trans-Canada Highway in NL unless otherwise posted?",
-        answer: "100 km/h",
-        options: ["80 km/h", "90 km/h", "100 km/h", "110 km/h"],
-        correctIndex: 2,
-        explanation: "The default maximum speed limit on paved rural sections of the TCH is 100 km/h."
-      },
-      {
-        category: "Speed Limits",
-        question: "What is the standard unposted speed limit in urban areas and towns in NL?",
-        answer: "50 km/h",
-        options: ["30 km/h", "40 km/h", "50 km/h", "60 km/h"],
-        correctIndex: 2,
-        explanation: "Unless posted otherwise, speed limits in towns, cities, and residential zones are 50 km/h."
-      },
-      {
-        category: "Speed Limits",
-        question: "What is the speed limit on unposted gravel roads in Newfoundland & Labrador?",
-        answer: "60 km/h",
-        options: ["50 km/h", "60 km/h", "70 km/h", "80 km/h"],
-        correctIndex: 1,
-        explanation: "The statutory speed limit on gravel roads without posted speed signs is 60 km/h."
-      },
-      {
-        category: "Speed Limits",
-        question: "Unless otherwise posted, what is the default speed limit in school zones when children are present?",
-        answer: "50 km/h (or 30 km/h where posted by local municipality)",
-        options: ["20 km/h", "30 km/h or 50 km/h statutory", "60 km/h", "70 km/h"],
-        correctIndex: 1,
-        explanation: "The default limit is 50 km/h, though many municipalities designate lowered school zones of 30 km/h."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When approaching an intersection with a flashing red light, what must you do?",
-        answer: "Come to a full stop and yield right-of-way, then proceed when safe",
-        options: ["Slow down and proceed with caution", "Come to a full stop and proceed when clear", "Maintain speed if clear", "Stop only if traffic is coming"],
-        correctIndex: 1,
-        explanation: "A flashing red traffic light must be treated exactly like a stop sign."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What does a flashing yellow traffic signal mean?",
-        answer: "Slow down and proceed with caution",
-        options: ["Stop completely", "Slow down and proceed with caution", "Speed up before red", "Pedestrians must yield"],
-        correctIndex: 1,
-        explanation: "A flashing yellow light warns drivers to slow down, be alert, and proceed through the intersection cautiously."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When two vehicles reach an uncontrolled four-way intersection at the same time, who has right-of-way?",
-        answer: "The vehicle on the right",
-        options: ["The vehicle on the left", "The vehicle on the right", "The faster vehicle", "The vehicle going straight"],
-        correctIndex: 1,
-        explanation: "At an uncontrolled intersection, drivers must yield to the vehicle arriving on their right."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When entering a traffic circle or roundabout, who has the right-of-way?",
-        answer: "Traffic already inside the circle",
-        options: ["Vehicles entering the circle", "Traffic already inside the circle", "The largest vehicle", "Vehicles turning right"],
-        correctIndex: 1,
-        explanation: "Drivers entering a roundabout must yield right-of-way to traffic already travelling inside it."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What must a driver do when an emergency vehicle with flashing lights or sirens approaches from either direction on a two-lane road?",
-        answer: "Pull over to the right curb/shoulder and stop",
-        options: ["Speed up to clear the way", "Pull over to the right and stop", "Stop immediately in your lane", "Maintain speed and move left"],
-        correctIndex: 1,
-        explanation: "Safely pull as far right as possible and come to a complete stop until the emergency vehicle passes."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What does the NL 'Move Over Law' require when passing a stopped emergency vehicle or tow truck with flashing lights?",
-        answer: "Slow down and shift to an adjacent lane if safe to do so",
-        options: ["Maintain speed and sound horn", "Slow down and shift lanes if safe", "Stop completely beside the vehicle", "Speed past to clear obstruction"],
-        correctIndex: 1,
-        explanation: "Drivers must reduce speed below posted limit and move into another lane if safe to leave space for roadside emergency personnel."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What is the minimum distance you must park from a fire hydrant in NL?",
-        answer: "1 metre (or 3 feet)",
-        options: ["1 metre", "3 metres", "5 metres", "7 metres"],
-        correctIndex: 0,
-        explanation: "You must not park within 1 metre (approximately 3 feet) of a fire hydrant."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What is the minimum distance you must park from a crosswalk or intersection?",
-        answer: "6 metres",
-        options: ["3 metres", "6 metres", "9 metres", "12 metres"],
-        correctIndex: 1,
-        explanation: "Vehicles must not park within 6 metres of a crosswalk or intersection corner."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When parking uphill with a curb, which way should you turn your front wheels?",
-        answer: "To the left (away from the curb)",
-        options: ["To the right (towards curb)", "To the left (away from curb)", "Straight ahead", "It does not matter"],
-        correctIndex: 1,
-        explanation: "When parking uphill with a curb, turn wheels to the left so the back of the tire catches the curb if brakes fail."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When parking downhill with a curb, which way should you turn your wheels?",
-        answer: "To the right (towards the curb)",
-        options: ["To the right (towards curb)", "To the left (away from curb)", "Straight ahead", "Parallel to curb"],
-        correctIndex: 0,
-        explanation: "When parking downhill, turn wheels right toward the curb so the vehicle rolls into the curb if it moves."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When parking on any hill without a curb (uphill or downhill), turn front wheels:",
-        answer: "To the right (towards the edge of the road)",
-        options: ["To the left", "To the right (towards the edge)", "Straight", "Either direction"],
-        correctIndex: 1,
-        explanation: "Without a curb, turn wheels right so the vehicle rolls off the road away from traffic."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What does a solid yellow line on your side of the centre line mean?",
-        answer: "Passing is prohibited",
-        options: ["Passing is allowed anytime", "Passing is prohibited", "Passing allowed during day only", "Road ends ahead"],
-        correctIndex: 1,
-        explanation: "A solid yellow line on your side indicates it is unsafe and illegal to cross to pass."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What does a broken (dashed) yellow centre line indicate?",
-        answer: "Passing is permitted when safe",
-        options: ["Passing is prohibited", "Passing is permitted when safe", "Lane shift ahead", "No turning allowed"],
-        correctIndex: 1,
-        explanation: "A broken yellow line means you may pass other vehicles if the road ahead is clear and safe."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When passing a bicyclist, how much clearance should drivers leave where possible?",
-        answer: "At least 1 metre",
-        options: ["0.5 metres", "1 metre", "2 metres", "3 metres"],
-        correctIndex: 1,
-        explanation: "Drivers should allow a minimum 1 metre distance when passing bicycles."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When exiting a private driveway or alley onto a public street, you must:",
-        answer: "Stop and yield right-of-way to all pedestrians and approaching traffic",
-        options: ["Sound horn and enter", "Yield only to vehicles from left", "Stop and yield to pedestrians and traffic", "Maintain normal speed"],
-        correctIndex: 2,
-        explanation: "Always yield to pedestrians on sidewalks and vehicles already on the main roadway."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What must you do when approaching a school bus stopped with red lights flashing and stop arm extended?",
-        answer: "Stop at least 20 metres away from both directions and wait until lights stop flashing",
-        options: ["Slow down to 20 km/h", "Stop only if approaching from behind", "Stop at least 20 metres away from either direction", "Pass cautiously"],
-        correctIndex: 2,
-        explanation: "Drivers approaching from front or rear must stop completely at least 20 metres away until flashing red lights stop."
-      },
+      { category: "Speed Limits", question: "What is the speed limit on paved rural sections of the Trans-Canada Highway in NL unless otherwise posted?", answer: "100 km/h", options: ["80 km/h", "90 km/h", "100 km/h", "110 km/h"], correctIndex: 2, explanation: "The default maximum speed limit on paved rural sections of the TCH is 100 km/h." },
+      { category: "Speed Limits", question: "What is the standard unposted speed limit in urban areas and towns in NL?", answer: "50 km/h", options: ["30 km/h", "40 km/h", "50 km/h", "60 km/h"], correctIndex: 2, explanation: "Unless posted otherwise, speed limits in towns, cities, and residential zones are 50 km/h." },
+      { category: "Speed Limits", question: "What is the speed limit on unposted gravel roads in Newfoundland & Labrador?", answer: "60 km/h", options: ["50 km/h", "60 km/h", "70 km/h", "80 km/h"], correctIndex: 1, explanation: "The statutory speed limit on gravel roads without posted speed signs is 60 km/h." },
+      { category: "Speed Limits", question: "Unless otherwise posted, what is the default speed limit in school zones when children are present?", answer: "50 km/h (or 30 km/h where posted by local municipality)", options: ["20 km/h", "30 km/h or 50 km/h statutory", "60 km/h", "70 km/h"], correctIndex: 1, explanation: "The default limit is 50 km/h, though many municipalities designate lowered school zones of 30 km/h." },
+      { category: "Rules of the Road", question: "When approaching an intersection with a flashing red light, what must you do?", answer: "Come to a full stop and yield right-of-way, then proceed when safe", options: ["Slow down and proceed with caution", "Come to a full stop and proceed when clear", "Maintain speed if clear", "Stop only if traffic is coming"], correctIndex: 1, explanation: "A flashing red traffic light must be treated exactly like a stop sign." },
+      { category: "Rules of the Road", question: "What does a flashing yellow traffic signal mean?", answer: "Slow down and proceed with caution", options: ["Stop completely", "Slow down and proceed with caution", "Speed up before red", "Pedestrians must yield"], correctIndex: 1, explanation: "A flashing yellow light warns drivers to slow down, be alert, and proceed through the intersection cautiously." },
+      { category: "Rules of the Road", question: "When two vehicles reach an uncontrolled four-way intersection at the same time, who has right-of-way?", answer: "The vehicle on the right", options: ["The vehicle on the left", "The vehicle on the right", "The faster vehicle", "The vehicle going straight"], correctIndex: 1, explanation: "At an uncontrolled intersection, drivers must yield to the vehicle arriving on their right." },
+      { category: "Rules of the Road", question: "When entering a traffic circle or roundabout, who has the right-of-way?", answer: "Traffic already inside the circle", options: ["Vehicles entering the circle", "Traffic already inside the circle", "The largest vehicle", "Vehicles turning right"], correctIndex: 1, explanation: "Drivers entering a roundabout must yield right-of-way to traffic already travelling inside it." },
+      { category: "Rules of the Road", question: "What must a driver do when an emergency vehicle with flashing lights or sirens approaches from either direction on a two-lane road?", answer: "Pull over to the right curb/shoulder and stop", options: ["Speed up to clear the way", "Pull over to the right and stop", "Stop immediately in your lane", "Maintain speed and move left"], correctIndex: 1, explanation: "Safely pull as far right as possible and come to a complete stop until the emergency vehicle passes." },
+      { category: "Rules of the Road", question: "What does the NL 'Move Over Law' require when passing a stopped emergency vehicle or tow truck with flashing lights?", answer: "Slow down and shift to an adjacent lane if safe to do so", options: ["Maintain speed and sound horn", "Slow down and shift lanes if safe", "Stop completely beside the vehicle", "Speed past to clear obstruction"], correctIndex: 1, explanation: "Drivers must reduce speed below posted limit and move into another lane if safe to leave space for roadside emergency personnel." },
+      { category: "Rules of the Road", question: "What is the minimum distance you must park from a fire hydrant in NL?", answer: "1 metre (or 3 feet)", options: ["1 metre", "3 metres", "5 metres", "7 metres"], correctIndex: 0, explanation: "You must not park within 1 metre (approximately 3 feet) of a fire hydrant." },
+      { category: "Rules of the Road", question: "What is the minimum distance you must park from a crosswalk or intersection?", answer: "6 metres", options: ["3 metres", "6 metres", "9 metres", "12 metres"], correctIndex: 1, explanation: "Vehicles must not park within 6 metres of a crosswalk or intersection corner." },
+      { category: "Rules of the Road", question: "When parking uphill with a curb, which way should you turn your front wheels?", answer: "To the left (away from the curb)", options: ["To the right (towards curb)", "To the left (away from curb)", "Straight ahead", "It does not matter"], correctIndex: 1, explanation: "When parking uphill with a curb, turn wheels to the left so the back of the tire catches the curb if brakes fail." },
+      { category: "Rules of the Road", question: "When parking downhill with a curb, which way should you turn your wheels?", answer: "To the right (towards the curb)", options: ["To the right (towards curb)", "To the left (away from curb)", "Straight ahead", "Parallel to curb"], correctIndex: 0, explanation: "When parking downhill, turn wheels right toward the curb so the vehicle rolls into the curb if it moves." },
+      { category: "Rules of the Road", question: "When parking on any hill without a curb (uphill or downhill), turn front wheels:", answer: "To the right (towards the edge of the road)", options: ["To the left", "To the right (towards the edge)", "Straight", "Either direction"], correctIndex: 1, explanation: "Without a curb, turn wheels right so the vehicle rolls off the road away from traffic." },
+      { category: "Rules of the Road", question: "What does a solid yellow line on your side of the centre line mean?", answer: "Passing is prohibited", options: ["Passing is allowed anytime", "Passing is prohibited", "Passing allowed during day only", "Road ends ahead"], correctIndex: 1, explanation: "A solid yellow line on your side indicates it is unsafe and illegal to cross to pass." },
+      { category: "Rules of the Road", question: "What does a broken (dashed) yellow centre line indicate?", answer: "Passing is permitted when safe", options: ["Passing is prohibited", "Passing is permitted when safe", "Lane shift ahead", "No turning allowed"], correctIndex: 1, explanation: "A broken yellow line means you may pass other vehicles if the road ahead is clear and safe." },
+      { category: "Rules of the Road", question: "When passing a bicyclist, how much clearance should drivers leave where possible?", answer: "At least 1 metre", options: ["0.5 metres", "1 metre", "2 metres", "3 metres"], correctIndex: 1, explanation: "Drivers should allow a minimum 1 metre distance when passing bicycles." },
+      { category: "Rules of the Road", question: "When exiting a private driveway or alley onto a public street, you must:", answer: "Stop and yield right-of-way to all pedestrians and approaching traffic", options: ["Sound horn and enter", "Yield only to vehicles from left", "Stop and yield to pedestrians and traffic", "Maintain normal speed"], correctIndex: 2, explanation: "Always yield to pedestrians on sidewalks and vehicles already on the main roadway." },
+      { category: "Rules of the Road", question: "What must you do when approaching a school bus stopped with red lights flashing and stop arm extended?", answer: "Stop at least 20 metres away from both directions and wait until lights stop flashing", options: ["Slow down to 20 km/h", "Stop only if approaching from behind", "Stop at least 20 metres away from either direction", "Pass cautiously"], correctIndex: 2, explanation: "Drivers approaching from front or rear must stop completely at least 20 metres away until flashing red lights stop." },
 
       // Signs & Signals (36-55)
-      {
-        category: "Road Signs",
-        question: "What shape is a standard Stop sign?",
-        answer: "Octagon (8-sided)",
-        options: ["Triangle", "Circle", "Octagon (8-sided)", "Diamond"],
-        correctIndex: 2,
-        explanation: "An 8-sided red octagon always signifies a full stop required."
-      },
-      {
-        category: "Road Signs",
-        question: "What shape is a Yield sign?",
-        answer: "Inverted triangle (3-sided pointing down)",
-        options: ["Square", "Inverted triangle", "Octagon", "Diamond"],
-        correctIndex: 1,
-        explanation: "A Yield sign is a red and white upside-down triangle."
-      },
-      {
-        category: "Road Signs",
-        question: "Diamond-shaped signs with yellow background generally indicate:",
-        answer: "Warning of potential hazards ahead",
-        options: ["Regulatory commands", "Warning of hazards ahead", "Guide or route directions", "Construction zones"],
-        correctIndex: 1,
-        explanation: "Yellow diamond signs warn drivers of upcoming road conditions, curves, or hazards."
-      },
-      {
-        category: "Road Signs",
-        question: "Orange background diamond or rectangular signs signify:",
-        answer: "Construction or maintenance work zone warning",
-        options: ["School zone", "Construction or work zone", "Hospital zone", "Parks and recreation"],
-        correctIndex: 1,
-        explanation: "Orange signs indicate active construction areas and detours."
-      },
-      {
-        category: "Road Signs",
-        question: "A green circular traffic sign or green directional sign indicates:",
-        answer: "Permitted actions, routes, or guide information",
-        options: ["Warnings", "Prohibitions", "Permitted movements or guide info", "Stop immediately"],
-        correctIndex: 2,
-        explanation: "Green signs provide guidance, route numbers, or permitted directional movements."
-      },
-      {
-        category: "Road Signs",
-        question: "A sign showing a red circle with a slash through a symbol means:",
-        answer: "The indicated action is strictly prohibited",
-        options: ["Caution advised", "The action is prohibited", "Recommended path", "Speed limit ahead"],
-        correctIndex: 1,
-        explanation: "A red slash inside a red circle always indicates 'do not' or prohibited."
-      },
-      {
-        category: "Road Signs",
-        question: "What does a pentagon (5-sided) shaped sign indicate?",
-        answer: "School zone or school crossing nearby",
-        options: ["Playground", "School zone or crossing", "Railway crossing", "Hospital"],
-        correctIndex: 1,
-        explanation: "Pentagon signs warn of nearby school grounds and crosswalks."
-      },
-      {
-        category: "Road Signs",
-        question: "A crossbuck sign (an 'X' shape) marks:",
-        answer: "Railway crossing ahead",
-        options: ["Crossroads intersection", "Railway crossing", "Pedestrian walk", "No entry"],
-        correctIndex: 1,
-        explanation: "An X-shaped crossbuck sign is located at highway-rail grade crossings."
-      },
-      {
-        category: "Road Signs",
-        question: "What does a sign displaying a moose symbol warn you about?",
-        answer: "Moose crossing area — high risk of collision",
-        options: ["Cattle crossing", "Moose crossing area", "Zoo ahead", "Hunting zone"],
-        correctIndex: 1,
-        explanation: "Moose warning signs alert drivers to high-density wildlife hazard areas across NL highways."
-      },
-      {
-        category: "Road Signs",
-        question: "What does a green arrow light on a traffic signal mean?",
-        answer: "Protected turn in the direction of the arrow",
-        options: ["Yield before turning", "Protected turn in arrow direction", "Stop then proceed", "Pedestrians have priority"],
-        correctIndex: 1,
-        explanation: "A green arrow gives you a protected turn; oncoming traffic faces a red light."
-      },
-      {
-        category: "Road Signs",
-        question: "What does a steady yellow light mean at an intersection?",
-        answer: "Clear the intersection; stop if you can do so safely",
-        options: ["Speed up to clear light", "Stop immediately regardless of safety", "Stop if safe to do so", "Honk horn"],
-        correctIndex: 2,
-        explanation: "Yellow indicates red is about to appear; stop if you can do so safely without being rear-ended."
-      },
-      {
-        category: "Road Signs",
-        question: "Can you turn right on a red light in Newfoundland and Labrador?",
-        answer: "Yes, after a complete stop and yielding, unless a sign prohibits it",
-        options: ["No, right on red is illegal in NL", "Yes, without stopping if clear", "Yes, after a full stop and yielding unless posted otherwise", "Only between 6 a.m. and 6 p.m."],
-        correctIndex: 2,
-        explanation: "Right turns on red are legal after coming to a full stop and yielding to traffic/pedestrians, unless a sign says 'No Turn on Red'."
-      },
-      {
-        category: "Road Signs",
-        question: "What must you do when turning left at a steady green light (without an arrow)?",
-        answer: "Yield to oncoming traffic and pedestrians before turning",
-        options: ["Turn immediately; you have priority", "Yield to oncoming traffic and pedestrians", "Wait for a green arrow only", "Honk before turning"],
-        correctIndex: 1,
-        explanation: "A regular green circle permits left turns only when yield clear of oncoming traffic."
-      },
-      {
-        category: "Road Signs",
-        question: "What does a red light with a green arrow pointing right mean?",
-        answer: "You may turn right in direction of arrow without stopping",
-        options: ["Stop before turning right", "Turn right in direction of arrow with priority", "No turns permitted", "Straight traffic only"],
-        correctIndex: 1,
-        explanation: "The green arrow gives priority movement in the direction indicated."
-      },
-      {
-        category: "Road Signs",
-        question: "What does a slow-moving vehicle emblem look like on the back of farm equipment?",
-        answer: "A reflective fluorescent orange triangle with red border",
-        options: ["A red square", "A reflective orange triangle with red border", "A yellow circle", "A white diamond"],
-        correctIndex: 1,
-        explanation: "Vehicles traveling under 40 km/h display a triangular orange/red emblem."
-      },
-      {
-        category: "Road Signs",
-        question: "A sign displaying a black skidding car with wavy tire marks warns of:",
-        answer: "Slippery road when wet or icy",
-        options: ["Steep hill ahead", "Slippery road conditions", "Rough pavement", "Winding road"],
-        correctIndex: 1,
-        explanation: "This symbol warns drivers that pavement may become slick when wet, slushy, or icy."
-      },
-      {
-        category: "Road Signs",
-        question: "A sign showing a truck going down an incline warns of:",
-        answer: "Steep hill ahead — shift to lower gear if needed",
-        options: ["Truck parking ahead", "Steep downgrade ahead", "Runaway lane ahead", "Weight limit zone"],
-        correctIndex: 1,
-        explanation: "Warns of a steep hill downhill grade ahead."
-      },
-      {
-        category: "Road Signs",
-        question: "What does a yellow sign showing two arrows pointing opposite directions around a divider mean?",
-        answer: "Divided highway begins or ends",
-        options: ["Two-way traffic ahead", "Divided highway ahead/ending", "Sharp turns ahead", "Passing zone"],
-        correctIndex: 1,
-        explanation: "Warns of the start or end of a physical median/divided highway."
-      },
-      {
-        category: "Road Signs",
-        question: "A blue rectangular sign displaying an 'H' indicates:",
-        answer: "Hospital nearby",
-        options: ["Highway entrance", "Hospital nearby", "Hotel ahead", "Helipad"],
-        correctIndex: 1,
-        explanation: "Blue service signs provide information such as nearby hospitals."
-      },
-      {
-        category: "Road Signs",
-        question: "What does a rectangular white sign with black lettering communicate?",
-        answer: "Regulatory traffic laws (e.g., speed limits, lane controls)",
-        options: ["General warnings", "Regulatory laws", "Tourist information", "Temporary detours"],
-        correctIndex: 1,
-        explanation: "White rectangular signs state enforceable traffic laws."
-      },
+      { category: "Road Signs", question: "What shape is a standard Stop sign?", answer: "Octagon (8-sided)", options: ["Triangle", "Circle", "Octagon (8-sided)", "Diamond"], correctIndex: 2, explanation: "An 8-sided red octagon always signifies a full stop required." },
+      { category: "Road Signs", question: "What shape is a Yield sign?", answer: "Inverted triangle (3-sided pointing down)", options: ["Square", "Inverted triangle", "Octagon", "Diamond"], correctIndex: 1, explanation: "A Yield sign is a red and white upside-down triangle." },
+      { category: "Road Signs", question: "Diamond-shaped signs with yellow background generally indicate:", answer: "Warning of potential hazards ahead", options: ["Regulatory commands", "Warning of hazards ahead", "Guide or route directions", "Construction zones"], correctIndex: 1, explanation: "Yellow diamond signs warn drivers of upcoming road conditions, curves, or hazards." },
+      { category: "Road Signs", question: "Orange background diamond or rectangular signs signify:", answer: "Construction or maintenance work zone warning", options: ["School zone", "Construction or work zone", "Hospital zone", "Parks and recreation"], correctIndex: 1, explanation: "Orange signs indicate active construction areas and detours." },
+      { category: "Road Signs", question: "A green circular traffic sign or green directional sign indicates:", answer: "Permitted actions, routes, or guide information", options: ["Warnings", "Prohibitions", "Permitted movements or guide info", "Stop immediately"], correctIndex: 2, explanation: "Green signs provide guidance, route numbers, or permitted directional movements." },
+      { category: "Road Signs", question: "A sign showing a red circle with a slash through a symbol means:", answer: "The indicated action is strictly prohibited", options: ["Caution advised", "The action is prohibited", "Recommended path", "Speed limit ahead"], correctIndex: 1, explanation: "A red slash inside a red circle always indicates 'do not' or prohibited." },
+      { category: "Road Signs", question: "What does a pentagon (5-sided) shaped sign indicate?", answer: "School zone or school crossing nearby", options: ["Playground", "School zone or crossing", "Railway crossing", "Hospital"], correctIndex: 1, explanation: "Pentagon signs warn of nearby school grounds and crosswalks." },
+      { category: "Road Signs", question: "A crossbuck sign (an 'X' shape) marks:", answer: "Railway crossing ahead", options: ["Crossroads intersection", "Railway crossing", "Pedestrian walk", "No entry"], correctIndex: 1, explanation: "An X-shaped crossbuck sign is located at highway-rail grade crossings." },
+      { category: "Road Signs", question: "What does a sign displaying a moose symbol warn you about?", answer: "Moose crossing area — high risk of collision", options: ["Cattle crossing", "Moose crossing area", "Zoo ahead", "Hunting zone"], correctIndex: 1, explanation: "Moose warning signs alert drivers to high-density wildlife hazard areas across NL highways." },
+      { category: "Road Signs", question: "What does a green arrow light on a traffic signal mean?", answer: "Protected turn in the direction of the arrow", options: ["Yield before turning", "Protected turn in arrow direction", "Stop then proceed", "Pedestrians have priority"], correctIndex: 1, explanation: "A green arrow gives you a protected turn; oncoming traffic faces a red light." },
+      { category: "Road Signs", question: "What does a steady yellow light mean at an intersection?", answer: "Clear the intersection; stop if you can do so safely", options: ["Speed up to clear light", "Stop immediately regardless of safety", "Stop if safe to do so", "Honk horn"], correctIndex: 2, explanation: "Yellow indicates red is about to appear; stop if you can do so safely without being rear-ended." },
+      { category: "Road Signs", question: "Can you turn right on a red light in Newfoundland and Labrador?", answer: "Yes, after a complete stop and yielding, unless a sign prohibits it", options: ["No, right on red is illegal in NL", "Yes, without stopping if clear", "Yes, after a full stop and yielding unless posted otherwise", "Only between 6 a.m. and 6 p.m."], correctIndex: 2, explanation: "Right turns on red are legal after coming to a full stop and yielding to traffic/pedestrians, unless a sign says 'No Turn on Red'." },
+      { category: "Road Signs", question: "What must you do when turning left at a steady green light (without an arrow)?", answer: "Yield to oncoming traffic and pedestrians before turning", options: ["Turn immediately; you have priority", "Yield to oncoming traffic and pedestrians", "Wait for a green arrow only", "Honk before turning"], correctIndex: 1, explanation: "A regular green circle permits left turns only when yield clear of oncoming traffic." },
+      { category: "Road Signs", question: "What does a red light with a green arrow pointing right mean?", answer: "You may turn right in direction of arrow without stopping", options: ["Stop before turning right", "Turn right in direction of arrow with priority", "No turns permitted", "Straight traffic only"], correctIndex: 1, explanation: "The green arrow gives priority movement in the direction indicated." },
+      { category: "Road Signs", question: "What does a slow-moving vehicle emblem look like on the back of farm equipment?", answer: "A reflective fluorescent orange triangle with red border", options: ["A red square", "A reflective orange triangle with red border", "A yellow circle", "A white diamond"], correctIndex: 1, explanation: "Vehicles traveling under 40 km/h display a triangular orange/red emblem." },
+      { category: "Road Signs", question: "A sign displaying a black skidding car with wavy tire marks warns of:", answer: "Slippery road when wet or icy", options: ["Steep hill ahead", "Slippery road conditions", "Rough pavement", "Winding road"], correctIndex: 1, explanation: "This symbol warns drivers that pavement may become slick when wet, slushy, or icy." },
+      { category: "Road Signs", question: "A sign showing a truck going down an incline warns of:", answer: "Steep hill ahead — shift to lower gear if needed", options: ["Truck parking ahead", "Steep downgrade ahead", "Runaway lane ahead", "Weight limit zone"], correctIndex: 1, explanation: "Warns of a steep hill downhill grade ahead." },
+      { category: "Road Signs", question: "What does a yellow sign showing two arrows pointing opposite directions around a divider mean?", answer: "Divided highway begins or ends", options: ["Two-way traffic ahead", "Divided highway ahead/ending", "Sharp turns ahead", "Passing zone"], correctIndex: 1, explanation: "Warns of the start or end of a physical median/divided highway." },
+      { category: "Road Signs", question: "A blue rectangular sign displaying an 'H' indicates:", answer: "Hospital nearby", options: ["Highway entrance", "Hospital nearby", "Hotel ahead", "Helipad"], correctIndex: 1, explanation: "Blue service signs provide information such as nearby hospitals." },
+      { category: "Road Signs", question: "What does a rectangular white sign with black lettering communicate?", answer: "Regulatory traffic laws (e.g., speed limits, lane controls)", options: ["General warnings", "Regulatory laws", "Tourist information", "Temporary detours"], correctIndex: 1, explanation: "White rectangular signs state enforceable traffic laws." },
 
       // Vehicle Control & Safety (56-75)
-      {
-        category: "Driver Safety",
-        question: "If your vehicle begins to hydroplane on water, you should:",
-        answer: "Ease off the accelerator and steer straight until tires regain traction",
-        options: ["Slam on brakes immediately", "Ease off gas and steer straight", "Turn wheel sharply right", "Pull handbrake"],
-        correctIndex: 1,
-        explanation: "Never slam on brakes during hydroplaning; ease off gas pedal to allow tires to reconnect with pavement."
-      },
-      {
-        category: "Driver Safety",
-        question: "If your vehicle skids on ice, which direction should you turn the steering wheel?",
-        answer: "In the direction you want the front of the vehicle to go",
-        options: ["Opposite to the skid", "In the direction you want to go", "Keep wheel locked straight", "Alternate left and right"],
-        correctIndex: 1,
-        explanation: "Steer into the skid (in the direction you wish to travel) to regain control."
-      },
-      {
-        category: "Driver Safety",
-        question: "What is the recommended safe following distance behind another vehicle under normal weather conditions?",
-        answer: "At least 2 seconds",
-        options: ["1 second", "At least 2 seconds", "4 seconds", "6 seconds"],
-        correctIndex: 1,
-        explanation: "Maintain at least a 2-second gap behind the vehicle ahead in good conditions."
-      },
-      {
-        category: "Driver Safety",
-        question: "In poor weather conditions (rain, fog, snow), following distance should be increased to at least:",
-        answer: "4 seconds or more",
-        options: ["2 seconds", "3 seconds", "4 seconds or more", "10 seconds"],
-        correctIndex: 2,
-        explanation: "Double your following distance to 4+ seconds in bad weather or slippery conditions."
-      },
-      {
-        category: "Driver Safety",
-        question: "When driving in dense fog, which headlights should you use?",
-        answer: "Low beam headlights",
-        options: ["High beam headlights", "Low beam headlights", "Parking lights only", "Hazard lights only"],
-        correctIndex: 1,
-        explanation: "High beams reflect off fog back into your eyes; always use low beams or fog lights."
-      },
-      {
-        category: "Driver Safety",
-        question: "When are drivers required to turn on headlights in NL?",
-        answer: "From a half-hour after sunset to a half-hour before sunrise, and when visibility is poor",
-        options: ["Only after dark", "From half-hour after sunset to half-hour before sunrise, and poor visibility", "Only on highways", "From 10 p.m. to 6 a.m."],
-        correctIndex: 1,
-        explanation: "Headlights are required from 1/2 hour after sunset to 1/2 hour before sunrise and whenever visibility is under 150m."
-      },
-      {
-        category: "Driver Safety",
-        question: "When following another vehicle at night, within what distance must you dim high beams to low beams?",
-        answer: "60 metres",
-        options: ["30 metres", "60 metres", "150 metres", "200 metres"],
-        correctIndex: 1,
-        explanation: "Dim your high beams within 60 metres when following behind another vehicle."
-      },
-      {
-        category: "Driver Safety",
-        question: "When an oncoming vehicle approaches at night, within what distance must you switch from high to low beams?",
-        answer: "150 metres",
-        options: ["60 metres", "100 metres", "150 metres", "300 metres"],
-        correctIndex: 2,
-        explanation: "Switch to low beams within 150 metres of an oncoming approaching vehicle."
-      },
-      {
-        category: "Driver Safety",
-        question: "What should you do if an oncoming vehicle does not dim its high beam headlights?",
-        answer: "Look down towards the right edge of your lane",
-        options: ["Stare directly at their headlights", "Flash high beams continuously", "Look down towards right edge of lane", "Close your eyes"],
-        correctIndex: 2,
-        explanation: "Gaze toward the right edge of your lane to avoid glare while keeping sight of the road line."
-      },
-      {
-        category: "Driver Safety",
-        question: "If a tire blows out while driving, your first reaction should be to:",
-        answer: "Grip the wheel firmly and ease off the gas pedal",
-        options: ["Slam on brakes immediately", "Grip wheel firmly and ease off gas", "Turn sharply onto shoulder", "Shift directly to Park"],
-        correctIndex: 1,
-        explanation: "Hold steering tight to stay straight, let vehicle slow down gradually, then pull over."
-      },
-      {
-        category: "Driver Safety",
-        question: "If your gas pedal sticks while driving on a highway, you should immediately:",
-        answer: "Shift to Neutral and apply brakes calmly",
-        options: ["Turn off ignition key completely", "Shift to Neutral and apply brakes", "Pull emergency brake abruptly", "Jump out"],
-        correctIndex: 1,
-        explanation: "Shift engine to Neutral to disengage power, brake safely, and pull off the road before turning key off."
-      },
-      {
-        category: "Driver Safety",
-        question: "What is the phenomenon called where a driver becomes dazed and loses awareness of speed after long highway driving?",
-        answer: "Highway Hypnosis",
-        options: ["Road Fatigue", "Highway Hypnosis", "Tunnel Vision", "Velocity Blur"],
-        correctIndex: 1,
-        explanation: "Highway hypnosis is a trance-like state caused by monotonous long-distance driving."
-      },
-      {
-        category: "Driver Safety",
-        question: "How often should drivers take rest stops during long road trips to prevent fatigue?",
-        answer: "Every 2 hours or 200 km",
-        options: ["Every hour", "Every 2 hours or 200 km", "Every 5 hours", "Only when stopping for fuel"],
-        correctIndex: 1,
-        explanation: "Taking 15-minute breaks every 2 hours keeps drivers alert."
-      },
-      {
-        category: "Driver Safety",
-        question: "What is the primary cause of skidding?",
-        answer: "Driver error (e.g., accelerating, braking, or steering too hard for conditions)",
-        options: ["Bad tire tread", "Driver error", "Ice on road", "Vehicle weight"],
-        correctIndex: 1,
-        explanation: "Most skids result from driving too fast or making abrupt steering/braking moves for road conditions."
-      },
-      {
-        category: "Driver Safety",
-        question: "If your vehicle's right wheels drop off the paved road onto a soft shoulder, you should:",
-        answer: "Ease off gas, hold wheel straight, and steer back gently when slowed down",
-        options: ["Jerk wheel sharply back onto pavement", "Ease off gas, hold straight, steer back gently when slow", "Brake hard immediately", "Accelerate to jump back on"],
-        correctIndex: 1,
-        explanation: "Avoid jerking the wheel back onto pavement to prevent losing control or rolling."
-      },
-      {
-        category: "Vehicle Control",
-        question: "What is 'blind spot' checking before changing lanes?",
-        answer: "Looking over your shoulder into the area not visible in mirrors",
-        options: ["Checking rearview mirror twice", "Looking over shoulder into non-visible mirror areas", "Leaning forward to check side mirrors", "Honking before moving"],
-        correctIndex: 1,
-        explanation: "Always perform a shoulder check to view blind spots before changing lanes or merging."
-      },
-      {
-        category: "Vehicle Control",
-        question: "Before backing up out of a parking spot or driveway, you should:",
-        answer: "Turn head and look back directly over shoulder through rear window",
-        options: ["Rely solely on side mirrors", "Rely only on backup camera", "Turn head and look through rear window", "Sound horn continuously"],
-        correctIndex: 2,
-        explanation: "Physically turn and look out the rear window in addition to checking mirrors/cameras."
-      },
-      {
-        category: "Vehicle Control",
-        question: "How far in advance of a turn should you activate your turn signal?",
-        answer: "At least 30 metres before turn in city",
-        options: ["10 metres", "30 metres", "100 metres", "Just as you turn"],
-        correctIndex: 1,
-        explanation: "Signal intent well in advance—at least 30 metres before turning in urban areas."
-      },
-      {
-        category: "Vehicle Control",
-        question: "When applying Anti-lock Braking Systems (ABS) in an emergency, you should:",
-        answer: "Press brake pedal firmly and hold, steering as needed",
-        options: ["Pump brake pedal rapidly", "Press firmly and hold steering control", "Lightly tap pedal", "Pull emergency brake"],
-        correctIndex: 1,
-        explanation: "ABS handles pumping automatically; maintain firm, continuous foot pressure on brake pedal."
-      },
-      {
-        category: "Vehicle Control",
-        question: "What should you do if your brakes fail completely while driving?",
-        answer: "Pump brakes, shift to lower gear, and gently apply parking brake",
-        options: ["Turn engine off instantly", "Pump brakes, downshift, use parking brake gently", "Steer into oncoming lane", "Jump out"],
-        correctIndex: 1,
-        explanation: "Downshift to engine brake, pump hydraulic pedal, and gradually apply emergency brake."
-      },
+      { category: "Driver Safety", question: "If your vehicle begins to hydroplane on water, you should:", answer: "Ease off the accelerator and steer straight until tires regain traction", options: ["Slam on brakes immediately", "Ease off gas and steer straight", "Turn wheel sharply right", "Pull handbrake"], correctIndex: 1, explanation: "Never slam on brakes during hydroplaning; ease off gas pedal to allow tires to reconnect with pavement." },
+      { category: "Driver Safety", question: "If your vehicle skids on ice, which direction should you turn the steering wheel?", answer: "In the direction you want the front of the vehicle to go", options: ["Opposite to the skid", "In the direction you want to go", "Keep wheel locked straight", "Alternate left and right"], correctIndex: 1, explanation: "Steer into the skid (in the direction you wish to travel) to regain control." },
+      { category: "Driver Safety", question: "What is the recommended safe following distance behind another vehicle under normal weather conditions?", answer: "At least 2 seconds", options: ["1 second", "At least 2 seconds", "4 seconds", "6 seconds"], correctIndex: 1, explanation: "Maintain at least a 2-second gap behind the vehicle ahead in good conditions." },
+      { category: "Driver Safety", question: "In poor weather conditions (rain, fog, snow), following distance should be increased to at least:", answer: "4 seconds or more", options: ["2 seconds", "3 seconds", "4 seconds or more", "10 seconds"], correctIndex: 2, explanation: "Double your following distance to 4+ seconds in bad weather or slippery conditions." },
+      { category: "Driver Safety", question: "When driving in dense fog, which headlights should you use?", answer: "Low beam headlights", options: ["High beam headlights", "Low beam headlights", "Parking lights only", "Hazard lights only"], correctIndex: 1, explanation: "High beams reflect off fog back into your eyes; always use low beams or fog lights." },
+      { category: "Driver Safety", question: "When are drivers required to turn on headlights in NL?", answer: "From a half-hour after sunset to a half-hour before sunrise, and when visibility is poor", options: ["Only after dark", "From half-hour after sunset to half-hour before sunrise, and poor visibility", "Only on highways", "From 10 p.m. to 6 a.m."], correctIndex: 1, explanation: "Headlights are required from 1/2 hour after sunset to 1/2 hour before sunrise and whenever visibility is under 150m." },
+      { category: "Driver Safety", question: "When following another vehicle at night, within what distance must you dim high beams to low beams?", answer: "60 metres", options: ["30 metres", "60 metres", "150 metres", "200 metres"], correctIndex: 1, explanation: "Dim your high beams within 60 metres when following behind another vehicle." },
+      { category: "Driver Safety", question: "When an oncoming vehicle approaches at night, within what distance must you switch from high to low beams?", answer: "150 metres", options: ["60 metres", "100 metres", "150 metres", "300 metres"], correctIndex: 2, explanation: "Switch to low beams within 150 metres of an oncoming approaching vehicle." },
+      { category: "Driver Safety", question: "What should you do if an oncoming vehicle does not dim its high beam headlights?", answer: "Look down towards the right edge of your lane", options: ["Stare directly at their headlights", "Flash high beams continuously", "Look down towards right edge of lane", "Close your eyes"], correctIndex: 2, explanation: "Gaze toward the right edge of your lane to avoid glare while keeping sight of the road line." },
+      { category: "Driver Safety", question: "If a tire blows out while driving, your first reaction should be to:", answer: "Grip the wheel firmly and ease off the gas pedal", options: ["Slam on brakes immediately", "Grip wheel firmly and ease off gas", "Turn sharply onto shoulder", "Shift directly to Park"], correctIndex: 1, explanation: "Hold steering tight to stay straight, let vehicle slow down gradually, then pull over." },
+      { category: "Driver Safety", question: "If your gas pedal sticks while driving on a highway, you should immediately:", answer: "Shift to Neutral and apply brakes calmly", options: ["Turn off ignition key completely", "Shift to Neutral and apply brakes", "Pull emergency brake abruptly", "Jump out"], correctIndex: 1, explanation: "Shift engine to Neutral to disengage power, brake safely, and pull off the road before turning key off." },
+      { category: "Driver Safety", question: "What is the phenomenon called where a driver becomes dazed and loses awareness of speed after long highway driving?", answer: "Highway Hypnosis", options: ["Road Fatigue", "Highway Hypnosis", "Tunnel Vision", "Velocity Blur"], correctIndex: 1, explanation: "Highway hypnosis is a trance-like state caused by monotonous long-distance driving." },
+      { category: "Driver Safety", question: "How often should drivers take rest stops during long road trips to prevent fatigue?", answer: "Every 2 hours or 200 km", options: ["Every hour", "Every 2 hours or 200 km", "Every 5 hours", "Only when stopping for fuel"], correctIndex: 1, explanation: "Taking 15-minute breaks every 2 hours keeps drivers alert." },
+      { category: "Driver Safety", question: "What is the primary cause of skidding?", answer: "Driver error (e.g., accelerating, braking, or steering too hard for conditions)", options: ["Bad tire tread", "Driver error", "Ice on road", "Vehicle weight"], correctIndex: 1, explanation: "Most skids result from driving too fast or making abrupt steering/braking moves for road conditions." },
+      { category: "Driver Safety", question: "If your vehicle's right wheels drop off the paved road onto a soft shoulder, you should:", answer: "Ease off gas, hold wheel straight, and steer back gently when slowed down", options: ["Jerk wheel sharply back onto pavement", "Ease off gas, hold straight, steer back gently when slow", "Brake hard immediately", "Accelerate to jump back on"], correctIndex: 1, explanation: "Avoid jerking the wheel back onto pavement to prevent losing control or rolling." },
+      { category: "Vehicle Control", question: "What is 'blind spot' checking before changing lanes?", answer: "Looking over your shoulder into the area not visible in mirrors", options: ["Checking rearview mirror twice", "Looking over shoulder into non-visible mirror areas", "Leaning forward to check side mirrors", "Honking before moving"], correctIndex: 1, explanation: "Always perform a shoulder check to view blind spots before changing lanes or merging." },
+      { category: "Vehicle Control", question: "Before backing up out of a parking spot or driveway, you should:", answer: "Turn head and look back directly over shoulder through rear window", options: ["Rely solely on side mirrors", "Rely only on backup camera", "Turn head and look through rear window", "Sound horn continuously"], correctIndex: 2, explanation: "Physically turn and look out the rear window in addition to checking mirrors/cameras." },
+      { category: "Vehicle Control", question: "How far in advance of a turn should you activate your turn signal?", answer: "At least 30 metres before turn in city", options: ["10 metres", "30 metres", "100 metres", "Just as you turn"], correctIndex: 1, explanation: "Signal intent well in advance—at least 30 metres before turning in urban areas." },
+      { category: "Vehicle Control", question: "When applying Anti-lock Braking Systems (ABS) in an emergency, you should:", answer: "Press brake pedal firmly and hold, steering as needed", options: ["Pump brake pedal rapidly", "Press firmly and hold steering control", "Lightly tap pedal", "Pull emergency brake"], correctIndex: 1, explanation: "ABS handles pumping automatically; maintain firm, continuous foot pressure on brake pedal." },
+      { category: "Vehicle Control", question: "What should you do if your brakes fail completely while driving?", answer: "Pump brakes, shift to lower gear, and gently apply parking brake", options: ["Turn engine off instantly", "Pump brakes, downshift, use parking brake gently", "Steer into oncoming lane", "Jump out"], correctIndex: 1, explanation: "Downshift to engine brake, pump hydraulic pedal, and gradually apply emergency brake." },
 
       // Fines, Demerits, Regulations & Alcohol (76-95)
-      {
-        category: "Administrative Rules",
-        question: "Within how many days must you notify Motor Registration of a change in address or name?",
-        answer: "10 days",
-        options: ["5 days", "10 days", "14 days", "30 days"],
-        correctIndex: 1,
-        explanation: "You must notify the Registrar of Motor Vehicles within 10 days of changing address or name."
-      },
-      {
-        category: "Administrative Rules",
-        question: "How many demerit points within a 1-year period result in licence suspension for a novice driver in NL?",
-        answer: "6 points",
-        options: ["4 points", "6 points", "9 points", "12 points"],
-        correctIndex: 1,
-        explanation: "Novice drivers face suspension upon accumulating 6 demerit points within 12 months."
-      },
-      {
-        category: "Administrative Rules",
-        question: "How many demerit points within a 2-year period cause suspension for a fully licensed Class 5 driver in NL?",
-        answer: "12 points",
-        options: ["6 points", "9 points", "12 points", "15 points"],
-        correctIndex: 2,
-        explanation: "Full Class 5 drivers face suspension upon reaching 12 demerit points over 2 years."
-      },
-      {
-        category: "Administrative Rules",
-        question: "Demerit points recorded on a driving record remain active for how long from date of conviction?",
-        answer: "2 years",
-        options: ["1 year", "2 years", "3 years", "5 years"],
-        correctIndex: 1,
-        explanation: "Demerit points remain on record for 2 years from conviction date."
-      },
-      {
-        category: "Administrative Rules",
-        question: "In NL, holding or using a hand-held cell phone while driving results in fines and how many demerit points?",
-        answer: "4 demerit points",
-        options: ["2 points", "3 points", "4 points", "6 points"],
-        correctIndex: 2,
-        explanation: "Hand-held mobile device offenses incur a hefty fine and 4 demerit points."
-      },
-      {
-        category: "Administrative Rules",
-        question: "Who is responsible for ensuring passengers under 16 years of age wear seatbelts?",
-        answer: "The driver",
-        options: ["The passenger", "The driver", "The passenger's parents", "No one"],
-        correctIndex: 1,
-        explanation: "The driver is legally responsible for ensuring passengers under 16 are buckled up."
-      },
-      {
-        category: "Administrative Rules",
-        question: "What is the minimum legal tire tread depth required for passenger vehicles in NL?",
-        answer: "1.5 mm",
-        options: ["1.0 mm", "1.5 mm", "2.0 mm", "3.0 mm"],
-        correctIndex: 1,
-        explanation: "Tires must have at least 1.5 mm tread depth across main tread grooves."
-      },
-      {
-        category: "Administrative Rules",
-        question: "If involved in a traffic collision resulting in injury or property damage exceeding $2,000, you must report it to police:",
-        answer: "Immediately",
-        options: ["Within 24 hours", "Within 48 hours", "Immediately", "Within 7 days"],
-        correctIndex: 2,
-        explanation: "Collisions involving injury or total property damage exceeding $2,000 must be reported immediately to police."
-      },
-      {
-        category: "Alcohol & Impairment",
-        question: "What legal Blood Alcohol Content (BAC) limit defines Criminal Code impaired driving for fully licensed drivers?",
-        answer: "0.08%",
-        options: ["0.03%", "0.05%", "0.08%", "0.10%"],
-        correctIndex: 2,
-        explanation: "0.08% BAC is the threshold for federal criminal charge, though provincial sanctions begin at lower thresholds (0.05%)."
-      },
-      {
-        category: "Alcohol & Impairment",
-        question: "What is the provincial warning range BAC level in NL that triggers immediate 7-day licence suspension for experienced drivers?",
-        answer: "0.05% to 0.08%",
-        options: ["0.02% to 0.05%", "0.05% to 0.08%", "0.08% to 0.10%", "Above 0.10%"],
-        correctIndex: 1,
-        explanation: "Driving with BAC between 0.05% and 0.08% incurs provincial administrative suspension."
-      },
-      {
-        category: "Alcohol & Impairment",
-        question: "How long does it take the human body to eliminate the alcohol contained in one standard drink?",
-        answer: "Approximately 1 hour",
-        options: ["30 minutes", "Approximately 1 hour", "2 hours", "3 hours"],
-        correctIndex: 1,
-        explanation: "The body metabolizes roughly 1 standard drink per hour; coffee or cold showers cannot speed this up."
-      },
-      {
-        category: "Alcohol & Impairment",
-        question: "Can taking over-the-counter allergy or cold medication impair your driving ability?",
-        answer: "Yes, prescription and over-the-counter drugs can cause drowsiness and slow reaction times",
-        options: ["No, only illegal drugs impair", "Yes, over-the-counter drugs can affect driving", "Only if mixed with alcohol", "No, if bought without prescription"],
-        correctIndex: 1,
-        explanation: "Many cold/allergy meds cause drowsiness and reduced coordination."
-      },
-      {
-        category: "Administrative Rules",
-        question: "When sell or transfer ownership of a vehicle, you must notify Motor Registration within:",
-        answer: "10 days",
-        options: ["5 days", "10 days", "15 days", "30 days"],
-        correctIndex: 1,
-        explanation: "Vehicle ownership transfer notice must be submitted within 10 days."
-      },
-      {
-        category: "Administrative Rules",
-        question: "Driving without valid motor vehicle insurance in NL carries:",
-        answer: "Heavy fines, vehicle impoundment, and licence suspension",
-        options: ["A simple warning", "A $50 fine", "Heavy fines, impoundment, and suspension", "No penalty"],
-        correctIndex: 2,
-        explanation: "NL enforces strict penalties for uninsured driving including heavy fines."
-      },
-      {
-        category: "Administrative Rules",
-        question: "What is the penalty for failing to stop for a police officer signaling you to pull over?",
-        answer: "Fines, demerit points, and potential licence suspension/imprisonment",
-        options: ["Written warning", "Small parking-style fine", "Fines, demerits, suspension or arrest", "No penalty"],
-        correctIndex: 2,
-        explanation: "Fleeing or refusing to stop for police is a severe offense."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When turning left from a one-way street onto a two-way street, start turn from:",
-        answer: "The extreme left-hand lane",
-        options: ["The centre lane", "The extreme left-hand lane", "The right lane", "Any lane"],
-        correctIndex: 1,
-        explanation: "Always initiate left turns from the far-left lane."
-      },
-      {
-        category: "Rules of the Road",
-        question: "When two vehicles enter a narrow bridge from opposite directions, who yields?",
-        answer: "The vehicle reaching bridge second yields to vehicle already on or nearer bridge",
-        options: ["Car going uphill", "Vehicle arriving second", "Larger vehicle", "Car going downhill"],
-        correctIndex: 1,
-        explanation: "Yield to the driver who reached the narrow point first."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What is 'rubbernecking'?",
-        answer: "Slowing down to stare at accidents or roadside distractions",
-        options: ["Checking shoulder blind spots", "Slowing down to stare at distractions", "Looking around at intersections", "Adjusting mirrors"],
-        correctIndex: 1,
-        explanation: "Rubbernecking distracts drivers and frequently causes secondary collisions."
-      },
-      {
-        category: "Rules of the Road",
-        question: "Are studded snow tires legally permitted year-round in NL?",
-        answer: "No, permitted only between November 1 and April 30 (or dates specified annually)",
-        options: ["Yes, year-round", "No, permitted seasonally (Nov 1 - Apr 30)", "Only in Labrador", "Never permitted"],
-        correctIndex: 1,
-        explanation: "Studded tires are restricted to winter season months to protect highway pavement."
-      },
-      {
-        category: "Rules of the Road",
-        question: "What must you do if traffic control lights are completely out due to power failure?",
-        answer: "Treat the intersection as an all-way (4-way) stop",
-        options: ["Drive through fast", "Yield to traffic from left", "Treat intersection as an all-way stop", "Wait until lights turn back on"],
-        correctIndex: 2,
-        explanation: "When signals lose power, drivers must treat the junction as a 4-way stop."
-      }
+      { category: "Administrative Rules", question: "Within how many days must you notify Motor Registration of a change in address or name?", answer: "10 days", options: ["5 days", "10 days", "14 days", "30 days"], correctIndex: 1, explanation: "You must notify the Registrar of Motor Vehicles within 10 days of changing address or name." },
+      { category: "Administrative Rules", question: "How many demerit points within a 1-year period result in licence suspension for a novice driver in NL?", answer: "6 points", options: ["4 points", "6 points", "9 points", "12 points"], correctIndex: 1, explanation: "Novice drivers face suspension upon accumulating 6 demerit points within 12 months." },
+      { category: "Administrative Rules", question: "How many demerit points within a 2-year period cause suspension for a fully licensed Class 5 driver in NL?", answer: "12 points", options: ["6 points", "9 points", "12 points", "15 points"], correctIndex: 2, explanation: "Full Class 5 drivers face suspension upon reaching 12 demerit points over 2 years." },
+      { category: "Administrative Rules", question: "Demerit points recorded on a driving record remain active for how long from date of conviction?", answer: "2 years", options: ["1 year", "2 years", "3 years", "5 years"], correctIndex: 1, explanation: "Demerit points remain on record for 2 years from conviction date." },
+      { category: "Administrative Rules", question: "In NL, holding or using a hand-held cell phone while driving results in fines and how many demerit points?", answer: "4 demerit points", options: ["2 points", "3 points", "4 points", "6 points"], correctIndex: 2, explanation: "Hand-held mobile device offenses incur a hefty fine and 4 demerit points." },
+      { category: "Administrative Rules", question: "Who is responsible for ensuring passengers under 16 years of age wear seatbelts?", answer: "The driver", options: ["The passenger", "The driver", "The passenger's parents", "No one"], correctIndex: 1, explanation: "The driver is legally responsible for ensuring passengers under 16 are buckled up." },
+      { category: "Administrative Rules", question: "What is the minimum legal tire tread depth required for passenger vehicles in NL?", answer: "1.5 mm", options: ["1.0 mm", "1.5 mm", "2.0 mm", "3.0 mm"], correctIndex: 1, explanation: "Tires must have at least 1.5 mm tread depth across main tread grooves." },
+      { category: "Administrative Rules", question: "If involved in a traffic collision resulting in injury or property damage exceeding $2,000, you must report it to police:", answer: "Immediately", options: ["Within 24 hours", "Within 48 hours", "Immediately", "Within 7 days"], correctIndex: 2, explanation: "Collisions involving injury or total property damage exceeding $2,000 must be reported immediately to police." },
+      { category: "Alcohol & Impairment", question: "What legal Blood Alcohol Content (BAC) limit defines Criminal Code impaired driving for fully licensed drivers?", answer: "0.08%", options: ["0.03%", "0.05%", "0.08%", "0.10%"], correctIndex: 2, explanation: "0.08% BAC is the threshold for federal criminal charge, though provincial sanctions begin at lower thresholds (0.05%)." },
+      { category: "Alcohol & Impairment", question: "What is the provincial warning range BAC level in NL that triggers immediate 7-day licence suspension for experienced drivers?", answer: "0.05% to 0.08%", options: ["0.02% to 0.05%", "0.05% to 0.08%", "0.08% to 0.10%", "Above 0.10%"], correctIndex: 1, explanation: "Driving with BAC between 0.05% and 0.08% incurs provincial administrative suspension." },
+      { category: "Alcohol & Impairment", question: "How long does it take the human body to eliminate the alcohol contained in one standard drink?", answer: "Approximately 1 hour", options: ["30 minutes", "Approximately 1 hour", "2 hours", "3 hours"], correctIndex: 1, explanation: "The body metabolizes roughly 1 standard drink per hour; coffee or cold showers cannot speed this up." },
+      { category: "Alcohol & Impairment", question: "Can taking over-the-counter allergy or cold medication impair your driving ability?", answer: "Yes, prescription and over-the-counter drugs can cause drowsiness and slow reaction times", options: ["No, only illegal drugs impair", "Yes, over-the-counter drugs can affect driving", "Only if mixed with alcohol", "No, if bought without prescription"], correctIndex: 1, explanation: "Many cold/allergy meds cause drowsiness and reduced coordination." },
+      { category: "Administrative Rules", question: "When sell or transfer ownership of a vehicle, you must notify Motor Registration within:", answer: "10 days", options: ["5 days", "10 days", "15 days", "30 days"], correctIndex: 1, explanation: "Vehicle ownership transfer notice must be submitted within 10 days." },
+      { category: "Administrative Rules", question: "Driving without valid motor vehicle insurance in NL carries:", answer: "Heavy fines, vehicle impoundment, and licence suspension", options: ["A simple warning", "A $50 fine", "Heavy fines, impoundment, and suspension", "No penalty"], correctIndex: 2, explanation: "NL enforces strict penalties for uninsured driving including heavy fines." },
+      { category: "Administrative Rules", question: "What is the penalty for failing to stop for a police officer signaling you to pull over?", answer: "Fines, demerit points, and potential licence suspension/imprisonment", options: ["Written warning", "Small parking-style fine", "Fines, demerits, suspension or arrest", "No penalty"], correctIndex: 2, explanation: "Fleeing or refusing to stop for police is a severe offense." },
+      { category: "Rules of the Road", question: "When turning left from a one-way street onto a two-way street, start turn from:", answer: "The extreme left-hand lane", options: ["The centre lane", "The extreme left-hand lane", "The right lane", "Any lane"], correctIndex: 1, explanation: "Always initiate left turns from the far-left lane." },
+      { category: "Rules of the Road", question: "When two vehicles enter a narrow bridge from opposite directions, who yields?", answer: "The vehicle reaching bridge second yields to vehicle already on or nearer bridge", options: ["Car going uphill", "Vehicle arriving second", "Larger vehicle", "Car going downhill"], correctIndex: 1, explanation: "Yield to the driver who reached the narrow point first." },
+      { category: "Rules of the Road", question: "What is 'rubbernecking'?", answer: "Slowing down to stare at accidents or roadside distractions", options: ["Checking shoulder blind spots", "Slowing down to stare at distractions", "Looking around at intersections", "Adjusting mirrors"], correctIndex: 1, explanation: "Rubbernecking distracts drivers and frequently causes secondary collisions." },
+      { category: "Rules of the Road", question: "Are studded snow tires legally permitted year-round in NL?", answer: "No, permitted only between November 1 and April 30 (or dates specified annually)", options: ["Yes, year-round", "No, permitted seasonally (Nov 1 - Apr 30)", "Only in Labrador", "Never permitted"], correctIndex: 1, explanation: "Studded tires are restricted to winter season months to protect highway pavement." },
+      { category: "Rules of the Road", question: "What must you do if traffic control lights are completely out due to power failure?", answer: "Treat the intersection as an all-way (4-way) stop", options: ["Drive through fast", "Yield to traffic from left", "Treat intersection as an all-way stop", "Wait until lights turn back on"], correctIndex: 2, explanation: "When signals lose power, drivers must treat the junction as a 4-way stop." }
     ];
 
+    // Helper: Fisher-Yates Shuffle
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Flashcard State
+    let flashcardDeck = [];
     let currentCardIndex = 0;
     let isFlipped = false;
 
+    // Quiz State
+    let quizDeck = [];
+    const QUIZ_LENGTH = 7;
     let currentQuizIndex = 0;
     let score = 0;
     let answered = false;
@@ -924,10 +276,16 @@
       }
     }
 
-    // Flashcards
+    // Flashcards Logic
+    function shuffleFlashcards() {
+      flashcardDeck = shuffleArray(dataset);
+      currentCardIndex = 0;
+      updateCard();
+    }
+
     function updateCard() {
-      const card = dataset[currentCardIndex];
-      document.getElementById('fc-counter').innerText = `Card ${currentCardIndex + 1} of ${dataset.length}`;
+      const card = flashcardDeck[currentCardIndex];
+      document.getElementById('fc-counter').innerText = `Card ${currentCardIndex + 1} of ${flashcardDeck.length}`;
       document.getElementById('fc-category').innerText = card.category;
       document.getElementById('fc-question').innerText = card.question;
       document.getElementById('fc-answer').innerText = card.answer;
@@ -944,17 +302,19 @@
     }
 
     function nextCard() {
-      currentCardIndex = (currentCardIndex + 1) % dataset.length;
+      currentCardIndex = (currentCardIndex + 1) % flashcardDeck.length;
       updateCard();
     }
 
     function prevCard() {
-      currentCardIndex = (currentCardIndex - 1 + dataset.length) % dataset.length;
+      currentCardIndex = (currentCardIndex - 1 + flashcardDeck.length) % flashcardDeck.length;
       updateCard();
     }
 
-    // Quiz
+    // Quiz Logic
     function restartQuiz() {
+      // Pick 7 random questions from the master pool
+      quizDeck = shuffleArray(dataset).slice(0, QUIZ_LENGTH);
       currentQuizIndex = 0;
       score = 0;
       answered = false;
@@ -965,8 +325,8 @@
 
     function renderQuizQuestion() {
       answered = false;
-      const q = dataset[currentQuizIndex];
-      document.getElementById('quiz-progress').innerText = `Question ${currentQuizIndex + 1} of ${dataset.length}`;
+      const q = quizDeck[currentQuizIndex];
+      document.getElementById('quiz-progress').innerText = `Question ${currentQuizIndex + 1} of ${QUIZ_LENGTH}`;
       document.getElementById('quiz-score').innerText = `Score: ${score}/${currentQuizIndex}`;
       document.getElementById('quiz-question').innerText = q.question;
 
@@ -990,7 +350,7 @@
       if (answered) return;
       answered = true;
 
-      const q = dataset[currentQuizIndex];
+      const q = quizDeck[currentQuizIndex];
       const optionsButtons = document.getElementById('quiz-options').children;
       const feedback = document.getElementById('quiz-feedback');
 
@@ -1019,7 +379,7 @@
 
     function nextQuizQuestion() {
       currentQuizIndex++;
-      if (currentQuizIndex < dataset.length) {
+      if (currentQuizIndex < QUIZ_LENGTH) {
         renderQuizQuestion();
       } else {
         showQuizResults();
@@ -1031,23 +391,24 @@
       const results = document.getElementById('quiz-results');
       results.classList.remove('hidden');
 
-      const pct = Math.round((score / dataset.length) * 100);
+      const pct = Math.round((score / QUIZ_LENGTH) * 100);
       document.getElementById('final-score-pct').innerText = `${pct}%`;
+      document.getElementById('score-count-msg').innerText = `You scored ${score} out of ${QUIZ_LENGTH} correct.`;
 
       const msg = document.getElementById('pass-fail-msg');
-      if (pct >= 85) {
-        msg.innerText = "🎉 Congratulations! You Passed!";
-        msg.className = "text-lg font-bold text-emerald-600 mb-6";
+      if (pct >= 85) { // 6/7 is ~86%
+        msg.innerText = "🎉 Passed!";
+        msg.className = "text-lg font-bold text-emerald-600 mb-1";
         document.getElementById('final-score-pct').className = "text-5xl font-extrabold my-4 text-emerald-600";
       } else {
-        msg.innerText = "Needs More Practice! (Passing mark is 85%)";
-        msg.className = "text-lg font-bold text-rose-600 mb-6";
+        msg.innerText = "Needs Practice (Passing mark is 85%)";
+        msg.className = "text-lg font-bold text-rose-600 mb-1";
         document.getElementById('final-score-pct').className = "text-5xl font-extrabold my-4 text-rose-600";
       }
     }
 
-    // Init
-    updateCard();
+    // Init with scrambled deck
+    shuffleFlashcards();
   </script>
 </body>
 </html>
