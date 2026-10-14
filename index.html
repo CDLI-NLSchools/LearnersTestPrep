@@ -40,7 +40,6 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans flex flex-col justify-between">
 
-  <!-- Header -->
   <header class="bg-blue-900 text-white shadow-lg py-4 px-6 mb-6">
     <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
       <div>
@@ -55,8 +54,6 @@
   </header>
 
   <main class="max-w-3xl mx-auto w-full px-4 flex-grow">
-
-    <!-- Flashcard Section -->
     <section id="flashcards-section" class="flex flex-col items-center">
       <div class="w-full mb-4 flex justify-between items-center text-sm font-medium text-slate-600">
         <span id="fc-counter">Carte 1 sur 95</span>
@@ -85,7 +82,6 @@
       </div>
     </section>
 
-    <!-- Quiz Section -->
     <section id="quiz-section" class="hidden flex-col items-center">
       <div id="quiz-container" class="w-full bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
         <div class="flex justify-between items-center mb-4 border-b pb-3">
@@ -104,7 +100,6 @@
         </div>
       </div>
 
-      <!-- Quiz Results Summary -->
       <div id="quiz-results" class="hidden w-full bg-white p-8 rounded-2xl shadow-xl text-center border border-slate-200">
         <h2 class="text-2xl font-bold text-slate-800 mb-2">Quiz terminé !</h2>
         <div class="text-5xl font-extrabold my-4" id="final-score-pct">0%</div>
@@ -113,7 +108,6 @@
         <button onclick="restartQuiz()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition">Faire un autre quiz de 7 questions 🔀</button>
       </div>
     </section>
-
   </main>
 
   <footer class="text-center py-4 text-xs text-slate-500 mt-6 border-t border-slate-200">
@@ -122,20 +116,128 @@
 
   <script>
     const dataset = [
-      // Graduated Licensing & Level 1 Rules (1-15)
-      { category: "Graduated Licensing", question: "What passing score is required on the Newfoundland & Labrador Class 5 written permit test?", answer: "85%", options: ["70%", "75%", "80%", "85%"], correctIndex: 3, explanation: "A score of 85% or higher is required to pass the Class 5 written permit test in Newfoundland and Labrador." },
-      { category: "Graduated Licensing", question: "What is the maximum allowable Blood Alcohol Content (BAC) for a Level I Learner driver?", answer: "0.00%", options: ["0.00%", "0.02%", "0.05%", "0.08%"], correctIndex: 0, explanation: "A Level I learner driver must have a 0.00% BAC at all times." },
-      { category: "Graduated Licensing", question: "During which hours is a Level I Learner driver prohibited from driving?", answer: "Midnight (12:00 a.m.) to 5:00 a.m.", options: ["10:00 p.m. to 6:00 a.m.", "Midnight (12:00 a.m.) to 5:00 a.m.", "6:00 a.m. to 9:00 a.m.", "Any time with a supervising driver"], correctIndex: 1, explanation: "Level I drivers are prohibited from driving between midnight and 5:00 a.m." },
-      { category: "Graduated Licensing", question: "How long must a driver hold a Level I Class 5 licence before taking the road test (without commercial driver training)?", answer: "12 months", options: ["3 months", "6 months", "12 months", "18 months"], correctIndex: 2, explanation: "Without approved commercial driver training, a learner must hold a Level I licence for 12 months before attempting the road test." },
-      { category: "Graduated Licensing", question: "If a Level I driver completes an approved driver education course, the waiting period before taking the road test is reduced to:", answer: "8 months", options: ["4 months", "6 months", "8 months", "10 months"], correctIndex: 2, explanation: "Completion of an approved driver education course reduces the waiting period to 8 months." },
-      { category: "Graduated Licensing", question: "What driving experience must an accompanying driver have when supervising a Level I driver?", answer: "Licensed as a Class 5 driver for at least 3 years", options: ["A Class 1 licence", "Licensed as a Class 5 driver for at least 3 years", "A full commercial licence", "Any valid driver licence"], correctIndex: 1, explanation: "The accompanying driver must hold a valid Class 5 licence for at least three years." },
-      { category: "Graduated Licensing", question: "Who is allowed in the front seat next to a Level I driver while driving?", answer: "Only the designated accompanying driver", options: ["Any adult passenger", "Only the designated accompanying driver", "Only a family member", "No one"], correctIndex: 1, explanation: "Only the designated accompanying driver may sit in the front seat beside the learner." },
-      { category: "Graduated Licensing", question: "Are Level I drivers permitted to drive on paved highways such as the Trans-Canada Highway?", answer: "Yes, provided they have a qualified accompanying driver and comply with rules", options: ["Yes, at all times", "Yes, provided they have a qualified accompanying driver and comply with rules", "No, never", "Only in daylight"], correctIndex: 1, explanation: "Level I drivers may drive on highways if supervised by a qualified accompanying driver and all rules are followed." },
-      { category: "Graduated Licensing", question: "How long does a driver remain in the Level II (Novice) stage of the Graduated Driver Licensing (GDL) program?", answer: "12 months", options: ["6 months", "12 months", "24 months", "36 months"], correctIndex: 1, explanation: "The Level II stage lasts 12 months." },
-      { category: "Graduated Licensing", question: "What passenger restriction applies to Level II drivers between Midnight and 5:00 a.m.?", answer: "Only 1 passenger (unless accompanied by a qualified driver)", options: ["No restrictions", "Only 1 passenger (unless accompanied by a qualified driver)", "Only family members", "Only 2 passengers"], correctIndex: 1, explanation: "Level II drivers are limited to one passenger during the prohibited night period unless accompanied by a qualified driver." }
+      {
+        category: 'Licences et apprentissage',
+        question: 'Quel score minimum est requis pour réussir le test écrit du permis de classe 5 en Terre-Neuve-et-Labrador ?',
+        answer: '85 %',
+        options: ['70 %', '75 %', '80 %', '85 %'],
+        correctIndex: 3,
+        explanation: 'Le test écrit exige au minimum 85 % pour réussir.'
+      },
+      {
+        category: 'Licences et apprentissage',
+        question: 'Quel est le taux d’alcoolémie maximal autorisé pour un conducteur apprenant de niveau I ?',
+        answer: '0,00 %',
+        options: ['0,00 %', '0,02 %', '0,05 %', '0,08 %'],
+        correctIndex: 0,
+        explanation: 'Un conducteur de niveau I doit avoir une alcoolémie de 0,00 %.'
+      },
+      {
+        category: 'Vitesse et règles de circulation',
+        question: 'Quelle est la vitesse maximale générale en milieu urbain non précisée ?',
+        answer: '50 km/h',
+        options: ['30 km/h', '40 km/h', '50 km/h', '60 km/h'],
+        correctIndex: 2,
+        explanation: 'En milieu urbain ou municipal, la limite non indiquée est normalement de 50 km/h.'
+      },
+      {
+        category: 'Vitesse et règles de circulation',
+        question: 'Quelle est la vitesse maximale sur les routes rurales pavées non indiquées ?',
+        answer: '100 km/h',
+        options: ['60 km/h', '80 km/h', '100 km/h', '120 km/h'],
+        correctIndex: 2,
+        explanation: 'Sur les routes rurales pavées sans signalisation, le débit maximum est de 100 km/h.'
+      },
+      {
+        category: 'Signaux',
+        question: 'Quelle forme a un panneau arrêt ?',
+        answer: 'Octogone',
+        options: ['Triangle', 'Carré', 'Octogone', 'Losange'],
+        correctIndex: 2,
+        explanation: 'Le panneau stop est un octogone rouge.'
+      },
+      {
+        category: 'Signaux',
+        question: 'Que signifie un feu jaune fixe ?',
+        answer: 'Terminez votre traversée et arrêtez-vous si vous pouvez le faire en toute sécurité',
+        options: ['Accélérez pour traverser', 'Arrêtez immédiatement sans regarder', 'Terminez votre traversée et arrêtez-vous si vous pouvez le faire en toute sécurité', 'Ignorez-le'],
+        correctIndex: 2,
+        explanation: 'Le feu jaune fixe signale que la lumière va changer; il faut terminer la traversée ou s’arrêter en sécurité.'
+      },
+      {
+        category: 'Règles de priorité',
+        question: 'À une intersection sans signalisation, qui a la priorité lorsque deux véhicules arrivent en même temps ?',
+        answer: 'Le véhicule à droite',
+        options: ['Le véhicule le plus lent', 'Le véhicule à gauche', 'Le véhicule à droite', 'Le premier à freiner'],
+        correctIndex: 2,
+        explanation: 'À une intersection non commandée, le véhicule à droite a la priorité.'
+      },
+      {
+        category: 'Sécurité',
+        question: 'Que faire si un pneu éclate ?',
+        answer: 'Tenir fermement le volant et relâcher l’accélérateur',
+        options: ['Freiner brutalement', 'Tenir fermement le volant et relâcher l’accélérateur', 'Tourner immédiatement en direction du bord de la route', 'Mettre le contact'],
+        correctIndex: 1,
+        explanation: 'En cas d’éclatement de pneu, il faut garder le volant fermement et enlever le pied de l’accélérateur sans freiner trop fort.'
+      },
+      {
+        category: 'Sécurité',
+        question: 'Quelle distance de sécurité est recommandée dans des conditions normales ?',
+        answer: 'Au moins 2 secondes',
+        options: ['1 seconde', '2 secondes', '4 secondes', '10 secondes'],
+        correctIndex: 1,
+        explanation: 'En conditions normales, une distance de deux secondes est une règle de base.'
+      },
+      {
+        category: 'Sécurité',
+        question: 'Quand devez-vous utiliser les phares en faible visibilité ?',
+        answer: 'Dès que la visibilité est réduite, et la nuit',
+        options: ['Seulement la nuit', 'Dès que la visibilité est réduite, et la nuit', 'Seulement en neige', 'Jamais si le soleil est haut'],
+        correctIndex: 1,
+        explanation: 'Les phares doivent être allumés lorsque la visibilité est faible ou à l’heure où il faut les utiliser selon la règlementation.'
+      },
+      {
+        category: 'Conduite en hiver',
+        question: 'Que faire si votre véhicule dérape sur la glace ?',
+        answer: 'Tournez le volant dans la direction vers laquelle vous voulez aller',
+        options: ['Freinez brusquement', 'Tournez le volant dans la direction vers laquelle vous voulez aller', 'Tournez le volant vers la gauche', 'Accélérez pour reprendre le contrôle'],
+        correctIndex: 1,
+        explanation: 'En dérapage, il faut diriger le véhicule dans la direction voulue, sans freiner brutalement.'
+      },
+      {
+        category: 'Règlements administratifs',
+        question: 'Dans combien de jours devez-vous signaler un changement d’adresse au registre automobile ?',
+        answer: '10 jours',
+        options: ['5 jours', '10 jours', '14 jours', '30 jours'],
+        correctIndex: 1,
+        explanation: 'Un changement d’adresse ou de nom doit généralement être annoncé dans les 10 jours.'
+      },
+      {
+        category: 'Alcool et conduite',
+        question: 'Quel est le seuil de conduite avec alcool pour les conducteurs pleinement autorisés selon le Code criminel ?',
+        answer: '0,08 %',
+        options: ['0,03 %', '0,05 %', '0,08 %', '0,10 %'],
+        correctIndex: 2,
+        explanation: 'Selon le Code criminel, le seuil de conduite avec alcool est de 0,08 %.'
+      },
+      {
+        category: 'Sécurité des passagers',
+        question: 'Qui est responsable de s’assurer que les passagers de moins de 16 ans portent la ceinture de sécurité ?',
+        answer: 'Le conducteur',
+        options: ['Le passager', 'Le conducteur', 'La police', 'Le propriétaire du véhicule'],
+        correctIndex: 1,
+        explanation: 'Le conducteur est responsable des passagers mineurs dans son véhicule.'
+      },
+      {
+        category: 'Règles de stationnement',
+        question: 'Quelle est la distance minimale requise pour se stationner à côté d’une borne d’incendie ?',
+        answer: '1 mètre',
+        options: ['0,5 mètre', '1 mètre', '3 mètres', '5 mètres'],
+        correctIndex: 1,
+        explanation: 'On doit se stationner au moins à 1 mètre d’une borne d’incendie.'
+      }
     ];
 
-    // Helper: Fisher-Yates Shuffle
     function shuffleArray(array) {
       const arr = [...array];
       for (let i = arr.length - 1; i > 0; i--) {
@@ -145,12 +247,10 @@
       return arr;
     }
 
-    // Flashcard State
     let flashcardDeck = [];
     let currentCardIndex = 0;
     let isFlipped = false;
 
-    // Quiz State
     let quizDeck = [];
     const QUIZ_LENGTH = 7;
     let currentQuizIndex = 0;
@@ -169,21 +269,20 @@
         qzSec.classList.add('hidden');
         qzSec.classList.remove('flex');
 
-        fcBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold transition bg-amber-500 text-white shadow";
-        qzBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-800 hover:bg-blue-700 text-blue-100";
+        fcBtn.className = 'px-4 py-2 rounded-lg text-sm font-semibold transition bg-amber-500 text-white shadow';
+        qzBtn.className = 'px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-800 hover:bg-blue-700 text-blue-100';
       } else {
         qzSec.classList.remove('hidden');
         qzSec.classList.add('flex');
         fcSec.classList.add('hidden');
         fcSec.classList.remove('flex');
 
-        qzBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold transition bg-amber-500 text-white shadow";
-        fcBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-800 hover:bg-blue-700 text-blue-100";
+        qzBtn.className = 'px-4 py-2 rounded-lg text-sm font-semibold transition bg-amber-500 text-white shadow';
+        fcBtn.className = 'px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-800 hover:bg-blue-700 text-blue-100';
         restartQuiz();
       }
     }
 
-    // Flashcards Logic
     function shuffleFlashcards() {
       flashcardDeck = shuffleArray(dataset);
       currentCardIndex = 0;
@@ -191,6 +290,8 @@
     }
 
     function updateCard() {
+      if (!flashcardDeck.length) return;
+
       const card = flashcardDeck[currentCardIndex];
       document.getElementById('fc-counter').innerText = `Carte ${currentCardIndex + 1} sur ${flashcardDeck.length}`;
       document.getElementById('fc-category').innerText = card.category;
@@ -209,30 +310,35 @@
     }
 
     function nextCard() {
+      if (!flashcardDeck.length) return;
       currentCardIndex = (currentCardIndex + 1) % flashcardDeck.length;
       updateCard();
     }
 
     function prevCard() {
+      if (!flashcardDeck.length) return;
       currentCardIndex = (currentCardIndex - 1 + flashcardDeck.length) % flashcardDeck.length;
       updateCard();
     }
 
-    // Quiz Logic
     function restartQuiz() {
-      // Pick 7 random questions from the master pool
       quizDeck = shuffleArray(dataset).slice(0, QUIZ_LENGTH);
       currentQuizIndex = 0;
       score = 0;
       answered = false;
-      document.getElementById('quiz-container').classList.remove('hidden');
-      document.getElementById('quiz-results').classList.add('hidden');
+      const quizContainer = document.getElementById('quiz-container');
+      const quizResults = document.getElementById('quiz-results');
+      quizContainer.classList.remove('hidden');
+      quizResults.classList.add('hidden');
+      document.getElementById('final-score-pct').className = 'text-5xl font-extrabold my-4';
       renderQuizQuestion();
     }
 
     function renderQuizQuestion() {
       answered = false;
       const q = quizDeck[currentQuizIndex];
+      if (!q) return;
+
       document.getElementById('quiz-progress').innerText = `Question ${currentQuizIndex + 1} sur ${QUIZ_LENGTH}`;
       document.getElementById('quiz-score').innerText = `Score : ${score}/${currentQuizIndex}`;
       document.getElementById('quiz-question').innerText = q.question;
@@ -246,7 +352,7 @@
 
       q.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-blue-400 hover:bg-blue-50 font-medium transition text-slate-700 flex justify-between items-center";
+        btn.className = 'w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-blue-400 hover:bg-blue-50 font-medium transition text-slate-700 flex justify-between items-center';
         btn.innerHTML = `<span>${opt}</span><span class="opt-icon text-lg"></span>`;
         btn.onclick = () => selectOption(idx, btn);
         optionsContainer.appendChild(btn);
@@ -263,20 +369,20 @@
 
       if (selectedIndex === q.correctIndex) {
         score++;
-        button.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-semibold text-emerald-800 flex justify-between items-center shadow-sm";
-        button.querySelector('.opt-icon').innerText = "✓";
-        feedback.className = "p-4 rounded-lg mb-6 text-sm font-medium bg-emerald-100 text-emerald-800 border border-emerald-300";
-        feedback.innerText = "Bonne réponse ! " + q.explanation;
+        button.className = 'w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-semibold text-emerald-800 flex justify-between items-center shadow-sm';
+        button.querySelector('.opt-icon').innerText = '✓';
+        feedback.className = 'p-4 rounded-lg mb-6 text-sm font-medium bg-emerald-100 text-emerald-800 border border-emerald-300';
+        feedback.innerText = 'Bonne réponse ! ' + q.explanation;
       } else {
-        button.className = "w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 font-semibold text-rose-800 flex justify-between items-center shadow-sm";
-        button.querySelector('.opt-icon').innerText = "✕";
+        button.className = 'w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 font-semibold text-rose-800 flex justify-between items-center shadow-sm';
+        button.querySelector('.opt-icon').innerText = '✕';
 
         const correctBtn = optionsButtons[q.correctIndex];
-        correctBtn.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-semibold text-emerald-800 flex justify-between items-center";
-        correctBtn.querySelector('.opt-icon').innerText = "✓";
+        correctBtn.className = 'w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-semibold text-emerald-800 flex justify-between items-center';
+        correctBtn.querySelector('.opt-icon').innerText = '✓';
 
-        feedback.className = "p-4 rounded-lg mb-6 text-sm font-medium bg-rose-100 text-rose-800 border border-rose-300";
-        feedback.innerText = "Mauvaise réponse. " + q.explanation;
+        feedback.className = 'p-4 rounded-lg mb-6 text-sm font-medium bg-rose-100 text-rose-800 border border-rose-300';
+        feedback.innerText = 'Mauvaise réponse. ' + q.explanation;
       }
 
       feedback.classList.remove('hidden');
@@ -304,17 +410,16 @@
 
       const msg = document.getElementById('pass-fail-msg');
       if (pct >= 85) {
-        msg.innerText = "🎉 Réussi !";
-        msg.className = "text-lg font-bold text-emerald-600 mb-1";
-        document.getElementById('final-score-pct').className = "text-5xl font-extrabold my-4 text-emerald-600";
+        msg.innerText = '🎉 Réussi !';
+        msg.className = 'text-lg font-bold text-emerald-600 mb-1';
+        document.getElementById('final-score-pct').className = 'text-5xl font-extrabold my-4 text-emerald-600';
       } else {
-        msg.innerText = "Il faut encore s'entraîner (la note de passage est de 85 %)";
-        msg.className = "text-lg font-bold text-rose-600 mb-1";
-        document.getElementById('final-score-pct').className = "text-5xl font-extrabold my-4 text-rose-600";
+        msg.innerText = 'Il faut encore s’entraîner (la note de passage est de 85 %)';
+        msg.className = 'text-lg font-bold text-rose-600 mb-1';
+        document.getElementById('final-score-pct').className = 'text-5xl font-extrabold my-4 text-rose-600';
       }
     }
 
-    // Init with scrambled deck
     shuffleFlashcards();
   </script>
 </body>
